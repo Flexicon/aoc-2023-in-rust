@@ -18,7 +18,7 @@ enum HandKind {
     FiveOfAKind,
 }
 
-#[derive(Debug, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 struct Hand {
     kind: HandKind,
     value: String,
@@ -56,12 +56,6 @@ impl Ord for Hand {
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
-    }
-}
-
-impl PartialEq for Hand {
-    fn eq(&self, other: &Self) -> bool {
-        self.cmp(other) == std::cmp::Ordering::Equal
     }
 }
 
