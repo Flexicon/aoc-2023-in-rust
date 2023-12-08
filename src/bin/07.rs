@@ -66,54 +66,38 @@ impl PartialEq for Hand {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    Some(
-        input
-            .split("\n")
-            .filter(|l| !l.trim().is_empty())
-            .map(|line| {
-                let (hand, bid) = line.split_once(" ").unwrap();
-
-                Hand {
-                    kind: parse_kind(hand),
-                    value: String::from(hand),
-                    bid: bid.parse().unwrap(),
-                    part: 1,
-                }
-            })
-            .sorted()
-            .enumerate()
-            .map(|(i, h)| h.bid * (i as u32 + 1))
-            .sum(),
-    )
+    Some(solve(input, 1, parse_kind_p1))
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    Some(
-        input
-            .split("\n")
-            .filter(|l| !l.trim().is_empty())
-            .map(|line| {
-                let (hand, bid) = line.split_once(" ").unwrap();
+    Some(solve(input, 2, parse_kind_p2))
+}
 
-                Hand {
-                    kind: parse_kind_p2(hand),
-                    value: String::from(hand),
-                    bid: bid.parse().unwrap(),
-                    part: 2,
-                }
-            })
-            .sorted()
-            .enumerate()
-            .map(|(i, h)| h.bid * (i as u32 + 1))
-            .sum(),
-    )
+fn solve(input: &str, part: u8, kind_parse_fn: fn(&str) -> HandKind) -> u32 {
+    input
+        .split("\n")
+        .filter(|l| !l.trim().is_empty())
+        .map(|line| {
+            let (hand, bid) = line.split_once(" ").unwrap();
+
+            Hand {
+                kind: kind_parse_fn(hand),
+                value: String::from(hand),
+                bid: bid.parse().unwrap(),
+                part,
+            }
+        })
+        .sorted()
+        .enumerate()
+        .map(|(i, h)| h.bid * (i as u32 + 1))
+        .sum()
 }
 
 fn cmp_labels(lbls: &str, a: char, b: char) -> Ordering {
     lbls.find(a).unwrap().cmp(&lbls.find(b).unwrap())
 }
 
-fn parse_kind(hand: &str) -> HandKind {
+fn parse_kind_p1(hand: &str) -> HandKind {
     let repeats = hand
         .chars()
         .sorted()
@@ -130,7 +114,7 @@ fn parse_kind(hand: &str) -> HandKind {
         .collect::<Vec<String>>()
         .join("");
 
-    repeat_str_as_kind(repeats.as_str())
+    repeated_amounts_as_kind(repeats.as_str())
 }
 
 fn parse_kind_p2(hand: &str) -> HandKind {
@@ -157,7 +141,7 @@ fn parse_kind_p2(hand: &str) -> HandKind {
         .sorted()
         .collect::<Vec<i32>>();
 
-    if pairs.len() == 0 {
+    if pairs.is_empty() {
         pairs = Vec::from([jokers]);
     } else {
         let highest_pair = pairs.last_mut().unwrap();
@@ -171,10 +155,10 @@ fn parse_kind_p2(hand: &str) -> HandKind {
         .collect::<Vec<String>>()
         .join("");
 
-    repeat_str_as_kind(repeats.as_str())
+    repeated_amounts_as_kind(repeats.as_str())
 }
 
-fn repeat_str_as_kind(repeats: &str) -> HandKind {
+fn repeated_amounts_as_kind(repeats: &str) -> HandKind {
     match repeats {
         "2" => HandKind::OnePair,
         "3" => HandKind::ThreeOfAKind,
