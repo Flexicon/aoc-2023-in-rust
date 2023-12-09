@@ -9,14 +9,7 @@ pub fn part_two(input: &str) -> Option<i32> {
 }
 
 fn solve(input: &str, predict: fn(&Vec<i32>) -> i32) -> i32 {
-    let sequences = parse_sequences(input);
-    let mut predictions: Vec<i32> = Default::default();
-
-    for seq in sequences {
-        predictions.push(predict(&seq));
-    }
-
-    predictions.iter().sum()
+    parse_sequences(input).iter().map(|seq| predict(&seq)).sum()
 }
 
 fn parse_sequences(input: &str) -> Vec<Vec<i32>> {
