@@ -23,6 +23,8 @@ jobs:
                     target/
                 key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
                 restore-keys: ${{ runner.os }}-cargo-
+            - name: cargo --version
+              run: cargo --version
             - name: cargo test
               run: cargo test
             # uncomment to enable clippy linter
