@@ -46,7 +46,7 @@ pub fn part_two(input: &str) -> Option<u32> {
 }
 
 fn parse_nums(raw: &str) -> Vec<u32> {
-    raw.split(" ").filter_map(|v| v.parse().ok()).collect()
+    raw.split(' ').filter_map(|v| v.parse().ok()).collect()
 }
 
 #[cfg(test)]

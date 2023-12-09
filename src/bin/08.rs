@@ -26,7 +26,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         .collect();
 
     let map = rest
-        .split("\n")
+        .split('\n')
         .filter(|l| !l.trim().is_empty())
         .map(|l| {
             let (name, paths) = l.split_once(" = ").unwrap();
@@ -62,7 +62,7 @@ pub fn part_two(input: &str) -> Option<usize> {
         .collect();
 
     let map = rest
-        .split("\n")
+        .split('\n')
         .filter(|l| !l.trim().is_empty())
         .map(|l| {
             let (name, paths) = l.split_once(" = ").unwrap();
@@ -93,7 +93,7 @@ fn steps_to_any_end(s: &str, dirs: &Vec<Dir>, map: &HashMap<&str, Path<'_>>) -> 
     let mut steps = 0;
     let mut cur = s;
 
-    while !cur.ends_with("Z") {
+    while !cur.ends_with('Z') {
         let dir = dirs[steps % dirs.len()];
         let paths = map[cur];
         steps += 1;
@@ -115,9 +115,7 @@ fn gcd(first: usize, second: usize) -> usize {
     let mut max = first;
     let mut min = second;
     if min > max {
-        let val = max;
-        max = min;
-        min = val;
+        std::mem::swap(&mut max, &mut min);
     }
 
     loop {

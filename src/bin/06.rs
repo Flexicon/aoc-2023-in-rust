@@ -1,11 +1,11 @@
 advent_of_code::solution!(6);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let (line1, line2) = input.split_once("\n").unwrap();
+    let (line1, line2) = input.split_once('\n').unwrap();
 
     let (times, records) = (
-        line1.split(" ").filter_map(|v| v.parse::<u32>().ok()),
-        line2.split(" ").filter_map(|v| v.parse::<u32>().ok()),
+        line1.split(' ').filter_map(|v| v.parse::<u32>().ok()),
+        line2.split(' ').filter_map(|v| v.parse::<u32>().ok()),
     );
 
     Some(
@@ -17,14 +17,14 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let (line1, line2) = input.split_once("\n").unwrap();
+    let (line1, line2) = input.split_once('\n').unwrap();
     let (time, record) = (parse_as_whole_num(line1), parse_as_whole_num(line2));
 
     Some((1..time - 1).filter(|i| i * (time - i) > record).count() as u32)
 }
 fn parse_as_whole_num(raw: &str) -> u64 {
-    raw.replace(" ", "")
-        .split_once(":")
+    raw.replace(' ', "")
+        .split_once(':')
         .unwrap()
         .1
         .parse()

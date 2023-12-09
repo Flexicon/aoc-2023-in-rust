@@ -69,10 +69,10 @@ pub fn part_two(input: &str) -> Option<u32> {
 
 fn solve(input: &str, part: u8, kind_parse_fn: fn(&str) -> HandKind) -> u32 {
     input
-        .split("\n")
+        .split('\n')
         .filter(|l| !l.trim().is_empty())
         .map(|line| {
-            let (hand, bid) = line.split_once(" ").unwrap();
+            let (hand, bid) = line.split_once(' ').unwrap();
 
             Hand {
                 kind: kind_parse_fn(hand),
