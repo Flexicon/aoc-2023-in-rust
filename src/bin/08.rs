@@ -82,7 +82,10 @@ pub fn part_two(input: &str) -> Option<usize> {
 }
 
 fn parse_paths(val: &str) -> Path {
-    let (l, r) = val.trim_matches(&['(', ')']).split_once(", ").unwrap();
+    let (l, r) = val
+        .trim_matches(&['(', ')'] as &[_])
+        .split_once(", ")
+        .unwrap();
     Path { l, r }
 }
 
