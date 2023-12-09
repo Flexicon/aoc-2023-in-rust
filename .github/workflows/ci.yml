@@ -25,6 +25,8 @@ jobs:
                 restore-keys: ${{ runner.os }}-cargo-
             - name: rustup update
               run: rustup update
+            - name: cargo --version
+              run: cargo --version
             - name: cargo test
               run: cargo test
             # uncomment to enable clippy linter
