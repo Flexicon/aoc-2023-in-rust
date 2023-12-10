@@ -11,23 +11,9 @@ enum Dir {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let rows = input
-        .split('\n')
-        .filter(|l| !l.trim().is_empty())
-        .map(|l| l.chars().collect::<Vec<_>>())
-        .collect::<Vec<_>>();
+    let (rows, start) = parse_rows_and_start(input);
 
-    let mut s_loc = (0, 0);
-    for (i, r) in enumerate(rows.clone()) {
-        for (j, c) in enumerate(r) {
-            if c == 'S' {
-                s_loc = (i, j);
-                break;
-            }
-        }
-    }
-
-    let initial = next_pipe(s_loc, &rows, &None, false).unwrap();
+    let initial = next_pipe(start, &rows, &None, false).unwrap();
     let mut prev_dir = Some(initial.0);
     let mut cur = initial.1;
     let mut steps = 1;
@@ -48,8 +34,68 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(steps / 2)
 }
 
-pub fn part_two(_: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<u32> {
+    let (rows, start) = parse_rows_and_start(input);
+
+    let initial = next_pipe(start, &rows, &None, false).unwrap();
+    let mut prev_dir = Some(initial.0);
+    let mut cur = initial.1;
+    let mut steps = 1;
+    let mut pipe_loop = Vec::from([start, cur]);
+
+    while rows[cur.0][cur.1] != 'S' {
+        let check_for_start = steps > 1;
+        steps += 1;
+
+        match next_pipe(cur, &rows, &prev_dir, check_for_start) {
+            Some(v) => {
+                prev_dir = Some(v.0);
+                cur = v.1;
+                pipe_loop.push(cur);
+            }
+            None => break,
+        }
+    }
+
+    let mut inside_count = 0;
+    for (i, row) in enumerate(&rows) {
+        let mut inside = false;
+
+        for (j, c) in enumerate(row) {
+            let is_in_loop = pipe_loop.contains(&(i, j));
+
+            if !is_in_loop && inside {
+                inside_count += 1;
+            } else if is_in_loop && matches!(c, '|' | 'J' | 'L') {
+                // Only switch from inside to outside (and vice-versa) when
+                // encountering the pipes connecting with a north cells.
+                // Others simply cannot wrap any cell.
+                inside = !inside;
+            }
+        }
+    }
+
+    Some(inside_count)
+}
+
+fn parse_rows_and_start(input: &str) -> (Vec<Vec<char>>, (usize, usize)) {
+    let rows = input
+        .split('\n')
+        .filter(|l| !l.trim().is_empty())
+        .map(|l| l.chars().collect::<Vec<_>>())
+        .collect::<Vec<_>>();
+
+    let mut s_loc = (0, 0);
+    for (i, r) in enumerate(rows.clone()) {
+        for (j, c) in enumerate(r) {
+            if c == 'S' {
+                s_loc = (i, j);
+                break;
+            }
+        }
+    }
+
+    (rows, (s_loc.0, s_loc.1))
 }
 
 fn next_pipe(
@@ -139,13 +185,25 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        let result = part_one(&advent_of_code::template::read_file_part(
+            "examples", DAY, 1,
+        ));
         assert_eq!(result, Some(8));
     }
 
     #[test]
     fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
+        assert_eq!(result, Some(4));
+    }
+
+    #[test]
+    fn test_part_two_complicated() {
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 3,
+        ));
+        assert_eq!(result, Some(10));
     }
 }
