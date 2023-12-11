@@ -89,7 +89,7 @@ fn parse_paths(val: &str) -> Path {
     Path { l, r }
 }
 
-fn steps_to_any_end(s: &str, dirs: &Vec<Dir>, map: &HashMap<&str, Path<'_>>) -> usize {
+fn steps_to_any_end(s: &str, dirs: &[Dir], map: &HashMap<&str, Path<'_>>) -> usize {
     let mut steps = 0;
     let mut cur = s;
 
