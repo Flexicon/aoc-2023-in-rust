@@ -56,7 +56,7 @@ fn find_empty_rows_and_cols(grid: &[Vec<char>]) -> (Vec<usize>, Vec<usize>) {
     let mut empty_cols: Vec<usize> = Default::default();
     let mut empty_rows: Vec<usize> = Default::default();
 
-    for (i, _) in enumerate(&grid[0]) {
+    for i in 0..grid[0].len() {
         let col_empty = !grid.iter().map(|row| row[i]).contains(&'#');
 
         if col_empty {
