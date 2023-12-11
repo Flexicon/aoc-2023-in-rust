@@ -28,8 +28,32 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(distances.iter().sum())
 }
 
-pub fn part_two(_: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<u64> {
+    let grid = parse_grid(input);
+    let (empty_rows, empty_cols) = find_empty_rows_and_cols(&grid);
+    let galaxies = find_galaxies(&grid);
+
+    let mut distances: Vec<u64> = Default::default();
+
+    for (i, g1) in enumerate(&galaxies) {
+        for g2 in galaxies.iter().skip(i) {
+            let extra_cols = empty_cols
+                .iter()
+                .filter(|v| (g1.1..=g2.1).contains(v) || (g2.1..=g1.1).contains(v))
+                .count()
+                * (1_000_000 - 1);
+            let extra_rows = empty_rows
+                .iter()
+                .filter(|v| (g1.0..=g2.0).contains(v) || (g2.0..=g1.0).contains(v))
+                .count()
+                * (1_000_000 - 1);
+            let diff = (g1.0).abs_diff(g2.0) + (g1.1).abs_diff(g2.1) + extra_cols + extra_rows;
+
+            distances.push(diff as u64);
+        }
+    }
+
+    Some(distances.iter().sum())
 }
 
 fn find_galaxies(grid: &[Vec<char>]) -> Vec<(usize, usize)> {
@@ -86,6 +110,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(82000210));
     }
 }
