@@ -2,33 +2,15 @@ use itertools::{enumerate, Itertools};
 
 advent_of_code::solution!(11);
 
-pub fn part_one(input: &str) -> Option<u32> {
-    let grid = parse_grid(input);
-    let (empty_rows, empty_cols) = find_empty_rows_and_cols(&grid);
-    let galaxies = find_galaxies(&grid);
-
-    let mut distances: Vec<u32> = Default::default();
-
-    for (i, g1) in enumerate(&galaxies) {
-        for g2 in galaxies.iter().skip(i) {
-            let extra_cols = empty_cols
-                .iter()
-                .filter(|v| (g1.1..=g2.1).contains(v) || (g2.1..=g1.1).contains(v))
-                .count();
-            let extra_rows = empty_rows
-                .iter()
-                .filter(|v| (g1.0..=g2.0).contains(v) || (g2.0..=g1.0).contains(v))
-                .count();
-            let diff = (g1.0).abs_diff(g2.0) + (g1.1).abs_diff(g2.1) + extra_cols + extra_rows;
-
-            distances.push(diff as u32);
-        }
-    }
-
-    Some(distances.iter().sum())
+pub fn part_one(input: &str) -> Option<u64> {
+    Some(solve(input, 2))
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
+    Some(solve(input, 1_000_000))
+}
+
+fn solve(input: &str, expansion_size: usize) -> u64 {
     let grid = parse_grid(input);
     let (empty_rows, empty_cols) = find_empty_rows_and_cols(&grid);
     let galaxies = find_galaxies(&grid);
@@ -41,19 +23,19 @@ pub fn part_two(input: &str) -> Option<u64> {
                 .iter()
                 .filter(|v| (g1.1..=g2.1).contains(v) || (g2.1..=g1.1).contains(v))
                 .count()
-                * (1_000_000 - 1);
+                * (expansion_size - 1);
             let extra_rows = empty_rows
                 .iter()
                 .filter(|v| (g1.0..=g2.0).contains(v) || (g2.0..=g1.0).contains(v))
                 .count()
-                * (1_000_000 - 1);
+                * (expansion_size - 1);
             let diff = (g1.0).abs_diff(g2.0) + (g1.1).abs_diff(g2.1) + extra_cols + extra_rows;
 
             distances.push(diff as u64);
         }
     }
 
-    Some(distances.iter().sum())
+    distances.iter().sum()
 }
 
 fn find_galaxies(grid: &[Vec<char>]) -> Vec<(usize, usize)> {
