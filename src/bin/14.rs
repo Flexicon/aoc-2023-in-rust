@@ -56,11 +56,9 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     // Perorm tilt
-    let max_cycles = 1_000_000_000; // THIS TAKES WAY TOO DAMN LONG
+    let max_cycles = 10; // 1_000_000_000; // this takes way too damn long - disable for now
     for step in 0..max_cycles {
         let dir = dir_for_step(step);
-        let pct = (step as f32 / max_cycles as f32) * 100.0;
-        println!("STEP: [{}/{}] {:.0}%", step + 1, max_cycles, pct);
 
         match dir {
             Dir::North | Dir::West => {
